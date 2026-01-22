@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { ANIMATION_DURATION_MS, RING_ROTATION_DURATION } from "@/lib/constants";
 
 export function TechStack3D() {
   const [yearsCount, setYearsCount] = useState(0);
   const targetYears = 7;
 
   useEffect(() => {
-    const duration = 2000;
+    const duration = ANIMATION_DURATION_MS.counterDuration;
     const steps = 60;
     const increment = targetYears / steps;
     let current = 0;
@@ -45,7 +46,7 @@ export function TechStack3D() {
       {/* Inner rotating ring */}
       <motion.div
         animate={{ rotateZ: 360 }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        transition={{ duration: RING_ROTATION_DURATION.inner, repeat: Infinity, ease: "linear" }}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 md:w-52 md:h-52 rounded-full border border-primary/30"
       >
         {/* Dots on inner ring */}
@@ -65,7 +66,7 @@ export function TechStack3D() {
       {/* Middle rotating ring */}
       <motion.div
         animate={{ rotateZ: -360 }}
-        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+        transition={{ duration: RING_ROTATION_DURATION.middle, repeat: Infinity, ease: "linear" }}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 md:w-72 md:h-72 rounded-full border border-border"
       >
         {/* Dots on middle ring */}
@@ -85,7 +86,7 @@ export function TechStack3D() {
       {/* Outer rotating ring */}
       <motion.div
         animate={{ rotateZ: 360 }}
-        transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+        transition={{ duration: RING_ROTATION_DURATION.outer, repeat: Infinity, ease: "linear" }}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-96 md:h-96 rounded-full border border-border/50"
       >
         {/* Dots on outer ring */}

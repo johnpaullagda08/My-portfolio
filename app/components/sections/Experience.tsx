@@ -1,7 +1,6 @@
 "use client";
 
-import { Section } from "./Section";
-import { ScrollReveal } from "./ScrollReveal";
+import { ScrollReveal } from "@/components/common";
 
 export function Experience() {
   const whatIBuild = [

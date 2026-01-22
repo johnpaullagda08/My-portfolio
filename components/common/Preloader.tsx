@@ -1,12 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { ANIMATION_DURATION_MS } from "@/lib/constants";
+
+// Pre-computed random offsets for decorative elements (stable across renders)
+const DECORATIVE_OFFSETS = [
+  { x: 25, y: -30 },
+  { x: -40, y: 15 },
+  { x: 10, y: 35 },
+  { x: -25, y: -20 },
+  { x: 45, y: 5 },
+];
 
 export function Preloader() {
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+
+  // Memoize random offsets to prevent recalculation on re-render
+  const decorativeOffsets = useMemo(() => DECORATIVE_OFFSETS, []);
 
   useEffect(() => {
     // Simulate loading progress
@@ -18,12 +31,12 @@ export function Preloader() {
         }
         return prev + Math.random() * 30;
       });
-    }, 150);
+    }, ANIMATION_DURATION_MS.progressInterval);
 
     // Hide preloader after animation
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, ANIMATION_DURATION_MS.preloader);
 
     return () => {
       clearInterval(interval);
@@ -78,15 +91,15 @@ export function Preloader() {
 
           {/* Decorative elements */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {[...Array(5)].map((_, i) => (
+            {decorativeOffsets.map((offset, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{
                   opacity: [0, 0.5, 0],
                   scale: [0, 1, 1.5],
-                  x: Math.random() * 100 - 50,
-                  y: Math.random() * 100 - 50,
+                  x: offset.x,
+                  y: offset.y,
                 }}
                 transition={{
                   duration: 2,

@@ -2,14 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { SCROLL_THRESHOLD } from "@/lib/constants";
+import { ArrowUpIcon } from "@/components/icons";
 
 export function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const toggleVisibility = () => {
-      // Show button when page is scrolled past 400px
-      if (window.scrollY > 400) {
+      // Show button when page is scrolled past threshold
+      if (window.scrollY > SCROLL_THRESHOLD.scrollToTop) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
@@ -41,21 +43,12 @@ export function ScrollToTop() {
           aria-label="Scroll to top"
         >
           {/* Arrow icon */}
-          <motion.svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+          <motion.div
             animate={{ y: [0, -2, 0] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 10l7-7m0 0l7 7m-7-7v18"
-            />
-          </motion.svg>
+            <ArrowUpIcon size={20} />
+          </motion.div>
 
           {/* Decorative ring */}
           <motion.span

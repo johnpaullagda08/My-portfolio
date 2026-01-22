@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { profile } from "@/lib/data";
 import Link from "next/link";
 import Image from "next/image";
-import { ScrollReveal } from "./ScrollReveal";
+import { ScrollReveal } from "@/components/common";
 
 export function CTA() {
   const pageLinks = [

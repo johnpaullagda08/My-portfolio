@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Section } from "./Section";
-import { ScrollReveal } from "./ScrollReveal";
+import { Section, ScrollReveal } from "@/components/common";
 import { profile } from "@/lib/data";
 
 export function About() {

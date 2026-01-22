@@ -1,6 +1,6 @@
 "use client";
 
-import { ScrollReveal } from "./ScrollReveal";
+import { ScrollReveal } from "@/components/common";
 import { Badge } from "@/components/ui/badge";
 import { skills } from "@/lib/data";
 import { AuroraBackground } from "@/components/ui/aurora-background";

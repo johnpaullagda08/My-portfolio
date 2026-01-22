@@ -4,7 +4,9 @@ import { useRef, useState, useEffect } from "react";
 import { motion, PanInfo } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { projects } from "@/lib/data";
-import { ScrollReveal } from "./ScrollReveal";
+import { DRAG_CONSTRAINTS } from "@/lib/constants";
+import { ArrowRightIcon, CodeIcon, DragIcon } from "@/components/icons";
+import { ScrollReveal } from "@/components/common";
 import { useRouter } from "next/navigation";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { GlowingEffect } from "@/components/ui/glowing-effect";
@@ -22,7 +24,7 @@ export function Projects() {
         const containerWidth = containerRef.current.offsetWidth;
         const scrollWidth = containerRef.current.scrollWidth;
         setDragConstraints({
-          left: -(scrollWidth - containerWidth + 40),
+          left: -(scrollWidth - containerWidth + DRAG_CONSTRAINTS.padding),
           right: 0,
         });
       }
@@ -74,8 +76,8 @@ export function Projects() {
         <motion.div
           drag="x"
           dragConstraints={dragConstraints}
-          dragElastic={0.1}
-          dragTransition={{ bounceStiffness: 300, bounceDamping: 30 }}
+          dragElastic={DRAG_CONSTRAINTS.elastic}
+          dragTransition={{ bounceStiffness: DRAG_CONSTRAINTS.bounceStiffness, bounceDamping: DRAG_CONSTRAINTS.bounceDamping }}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
           className="flex gap-4 md:gap-6 pl-6 md:pl-20 pr-6 md:pr-20"
@@ -123,9 +125,7 @@ export function Projects() {
 
                         {/* Code icon */}
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 group-hover:opacity-20 transition-opacity">
-                          <svg className="w-32 h-32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                          </svg>
+                          <CodeIcon size={128} />
                         </div>
                       </div>
 
@@ -156,19 +156,7 @@ export function Projects() {
 
                   {/* Hover Arrow */}
                   <div className="absolute top-5 right-5 w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary opacity-0 group-hover:opacity-100 transition-all group-hover:bg-primary group-hover:text-primary-foreground">
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                      />
-                    </svg>
+                    <ArrowRightIcon size={20} />
                   </div>
                 </div>
               </div>
@@ -180,19 +168,7 @@ export function Projects() {
       {/* Scroll hint */}
       <div className="container mx-auto px-6 md:px-12 lg:px-20 mt-6">
         <p className="text-muted-foreground text-sm flex items-center gap-2">
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
-            />
-          </svg>
+          <DragIcon size={16} />
           Drag to explore, click to view
         </p>
       </div>

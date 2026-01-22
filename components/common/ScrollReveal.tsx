@@ -2,6 +2,12 @@
 
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
+import {
+  EASE_OUT_EXPO,
+  ANIMATION_DURATION,
+  MOVEMENT_OFFSET,
+  VIEWPORT_MARGIN,
+} from "@/lib/constants";
 
 interface ScrollRevealProps {
   children: ReactNode;
@@ -16,22 +22,23 @@ export function ScrollReveal({
   delay = 0,
   direction = "up",
 }: ScrollRevealProps) {
+  const offset = MOVEMENT_OFFSET.scrollReveal;
   const directions = {
-    up: { y: 40, x: 0 },
-    down: { y: -40, x: 0 },
-    left: { y: 0, x: 40 },
-    right: { y: 0, x: -40 },
+    up: { y: offset, x: 0 },
+    down: { y: -offset, x: 0 },
+    left: { y: 0, x: offset },
+    right: { y: 0, x: -offset },
   };
 
   return (
     <motion.div
       initial={{ opacity: 0, ...directions[direction] }}
       whileInView={{ opacity: 1, y: 0, x: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: true, margin: VIEWPORT_MARGIN }}
       transition={{
-        duration: 0.6,
+        duration: ANIMATION_DURATION.medium,
         delay,
-        ease: [0.22, 1, 0.36, 1],
+        ease: EASE_OUT_EXPO,
       }}
       className={className}
     >

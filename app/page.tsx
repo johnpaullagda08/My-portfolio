@@ -1,13 +1,6 @@
-import { Navbar } from "./components/Navbar";
-import { Hero } from "./components/Hero";
-import { About } from "./components/About";
-import { Skills } from "./components/Skills";
-import { Experience } from "./components/Experience";
-import { Projects } from "./components/Projects";
-import { CTA } from "./components/CTA";
-import { Footer } from "./components/Footer";
-import { Preloader } from "./components/Preloader";
-import { ScrollToTop } from "./components/ScrollToTop";
+import { Navbar, Footer } from "@/app/components/layout";
+import { Hero, About, Skills, Experience, Projects, CTA } from "@/app/components/sections";
+import { Preloader, ScrollToTop } from "@/components/common";
 
 export default function Home() {
   return (

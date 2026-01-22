@@ -1,28 +1,31 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { navLinks } from "@/lib/data";
+import { SCROLL_THRESHOLD, ANIMATION_DURATION, SPRING_CONFIG } from "@/lib/constants";
+import { SunIcon, MoonIcon, MenuIcon, CloseIcon } from "@/components/icons";
 import Link from "next/link";
 import Image from "next/image";
+
+// Hydration-safe mounted check
+const emptySubscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(emptySubscribe, getSnapshot, getServerSnapshot);
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > SCROLL_THRESHOLD.navbarBg);
 
       // Calculate scroll progress
       const winScroll = document.documentElement.scrollTop;
@@ -32,7 +35,7 @@ export function Navbar() {
 
       // Determine active section
       const sections = navLinks.map((link) => link.href.replace("#", ""));
-      const scrollPosition = window.scrollY + 100;
+      const scrollPosition = window.scrollY + SCROLL_THRESHOLD.sectionActive;
 
       for (const section of sections.reverse()) {
         const element = document.getElementById(section);
@@ -53,7 +56,7 @@ export function Navbar() {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: ANIMATION_DURATION.normal }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
             ? "bg-background/80 backdrop-blur-md border-b border-border"
@@ -101,7 +104,7 @@ export function Navbar() {
                       <motion.span
                         layoutId="activeSection"
                         className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                        transition={{ type: "spring", ...SPRING_CONFIG.activeSection }}
                       />
                     )}
                   </a>
@@ -116,13 +119,9 @@ export function Navbar() {
               >
                 {mounted && (
                   theme === "dark" ? (
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
+                    <SunIcon size={20} />
                   ) : (
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
+                    <MoonIcon size={20} />
                   )
                 )}
               </button>
@@ -138,28 +137,11 @@ export function Navbar() {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle menu"
             >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                {isMobileMenuOpen ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                )}
-              </svg>
+              {isMobileMenuOpen ? (
+                <CloseIcon size={24} />
+              ) : (
+                <MenuIcon size={24} />
+              )}
             </button>
           </div>
         </div>
@@ -201,16 +183,12 @@ export function Navbar() {
                 {mounted && (
                   theme === "dark" ? (
                     <>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                      </svg>
+                      <SunIcon size={20} />
                       <span>Light Mode</span>
                     </>
                   ) : (
                     <>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                      </svg>
+                      <MoonIcon size={20} />
                       <span>Dark Mode</span>
                     </>
                   )

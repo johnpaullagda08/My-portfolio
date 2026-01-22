@@ -1,4 +1,6 @@
-export const profile = {
+import type { Profile, Skills, Experience, Project, NavLink } from "@/types";
+
+export const profile: Profile = {
   name: "John Paul Lagda",
   title: "Full Stack Web Developer",
   email: "japs03081995@gmail.com",
@@ -10,14 +12,14 @@ export const profile = {
     "I am a web developer with a vast array of knowledge in different front end and back end technologies, responsive frameworks, and databases. Dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.",
 };
 
-export const skills = {
+export const skills: Skills = {
   frontend: ["HTML", "CSS", "JavaScript", "Bootstrap", "Vuetify", "Vue", "jQuery", "React"],
   backend: ["Node.js", "Express.js", "PHP"],
   databases: ["MySQL", "NoSQL", "MSSQL"],
   tools: ["VS Code", "GitLab", "GitHub", "NPM", "Yarn", "REST API"],
 };
 
-export const experience = [
+export const experience: Experience[] = [
   {
     company: "HRD Singapore PTE LTD",
     location: "Singapore",
@@ -57,7 +59,7 @@ export const experience = [
   },
 ];
 
-export const projects = [
+export const projects: Project[] = [
   {
     slug: "homes-system",
     name: "Homes System",
@@ -172,7 +174,7 @@ export const projects = [
   },
 ];
 
-export const navLinks = [
+export const navLinks: NavLink[] = [
   { name: "About", href: "#about" },
   { name: "Skills", href: "#skills" },
   { name: "Experience", href: "#experience" },
