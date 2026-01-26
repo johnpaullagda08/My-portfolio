@@ -1,6 +1,7 @@
 "use client";
 
 import { ScrollReveal } from "@/components/common";
+import { Spotlight } from "@/components/ui/spotlight";
 
 export function Experience() {
   const whatIBuild = [
@@ -89,11 +90,15 @@ export function Experience() {
 
         {/* Work History */}
         <ScrollReveal delay={0.3}>
-          <div className="mt-20 pt-16 border-t border-border">
-            <h3 className="text-lg md:text-xl font-bold text-foreground mb-8">
+          <div className="mt-20 pt-16 border-t border-border relative overflow-hidden rounded-2xl bg-card/50 p-8 md:p-12">
+            <Spotlight
+              className="-top-40 left-0 md:left-60 md:-top-20"
+              fill="white"
+            />
+            <h3 className="text-lg md:text-xl font-bold text-foreground mb-8 relative z-10">
               WORK HISTORY
             </h3>
-            <div className="space-y-8">
+            <div className="space-y-8 relative z-10">
               {/* HRD Singapore */}
               <div className="grid md:grid-cols-[200px_1fr] gap-4">
                 <div>

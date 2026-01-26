@@ -1,6 +1,9 @@
 export { ScrollReveal } from "./ScrollReveal";
+export { ScrollRevealWipe } from "./ScrollRevealWipe";
 export { Section } from "./Section";
 export { TechStack3D } from "./TechStack3D";
 export { Preloader } from "./Preloader";
 export { ScrollToTop } from "./ScrollToTop";
 export { ThemeProvider } from "./ThemeProvider";
+export { AnimatedText } from "./AnimatedText";
+export { CustomCursor } from "./CustomCursor";

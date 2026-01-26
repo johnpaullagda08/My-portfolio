@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { profile } from "@/lib/data";
-import { TechStack3D } from "@/components/common";
+import { TechStack3D, AnimatedText, ScrollRevealWipe } from "@/components/common";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { GitHubIcon, LinkedInIcon, ArrowDownIcon } from "@/components/icons";
 
@@ -31,42 +31,36 @@ export function Hero() {
               </span>
             </motion.div>
 
-            {/* Greeting */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.05 }}
-              className="text-primary font-mono text-sm md:text-base mb-4"
-            >
-              Hi, my name is
-            </motion.p>
+            {/* Greeting with wipe effect */}
+            <ScrollRevealWipe delay={0.1} className="mb-4">
+              <p className="text-primary font-mono text-sm md:text-base">
+                Hi, my name is
+              </p>
+            </ScrollRevealWipe>
 
-            {/* Name */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4"
-            >
-              {profile.name}
+            {/* Name with character animation */}
+            <div className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4">
+              <AnimatedText
+                text={profile.name}
+                as="h1"
+                staggerDelay={0.03}
+                initialDelay={0.3}
+              />
               <span className="text-primary">.</span>
-            </motion.h1>
+            </div>
 
-            {/* Title */}
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-xl md:text-3xl lg:text-4xl font-bold text-muted-foreground mb-6"
-            >
-              {profile.title}
-            </motion.h2>
+            {/* Title with wipe effect */}
+            <ScrollRevealWipe delay={0.5} direction="right" className="mb-6">
+              <h2 className="text-xl md:text-3xl lg:text-4xl font-bold text-muted-foreground">
+                {profile.title}
+              </h2>
+            </ScrollRevealWipe>
 
             {/* Summary */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+              transition={{ duration: 0.5, delay: 0.7 }}
               className="text-muted-foreground text-base md:text-lg max-w-xl mb-8 leading-relaxed"
             >
               Building robust web applications with 7+ years of experience.
@@ -78,7 +72,7 @@ export function Hero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+              transition={{ duration: 0.5, delay: 0.9 }}
               className="flex items-center gap-6"
             >
               <a
@@ -87,6 +81,7 @@ export function Hero() {
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
                 aria-label="GitHub"
+                data-cursor-hover
               >
                 <GitHubIcon size={24} />
               </a>
@@ -96,6 +91,7 @@ export function Hero() {
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
                 aria-label="LinkedIn"
+                data-cursor-hover
               >
                 <LinkedInIcon size={24} />
               </a>
@@ -108,6 +104,7 @@ export function Hero() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             className="hidden lg:flex justify-center items-center"
+            data-cursor-large
           >
             <TechStack3D />
           </motion.div>
@@ -118,7 +115,7 @@ export function Hero() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.5 }}
+        transition={{ delay: 1.2, duration: 0.5 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30"
       >
         <motion.div

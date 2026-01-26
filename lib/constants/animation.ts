@@ -1,6 +1,9 @@
 // Easing function for smooth animations (expo ease-out)
 export const EASE_OUT_EXPO: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
+// Elastic easing for bouncy text animations
+export const EASE_ELASTIC: [number, number, number, number] = [0.68, -0.55, 0.265, 1.55];
+
 // Animation durations in seconds
 export const ANIMATION_DURATION = {
   fast: 0.3,
