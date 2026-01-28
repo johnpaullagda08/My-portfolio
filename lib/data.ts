@@ -61,6 +61,35 @@ export const experience: Experience[] = [
 
 export const projects: Project[] = [
   {
+    slug: "photobooth",
+    name: "Photobooth",
+    description: "Browser-based photobooth app for events with photo strips, filters, and instant sharing",
+    tech: ["Next.js", "React", "TypeScript", "Tailwind CSS"],
+    category: "react",
+    image: "/projects/photobooth-hero.png",
+    images: [
+      "/projects/photobooth-hero.png",
+      "/projects/photobooth-features.png",
+      "/projects/photobooth-how-it-works.png",
+      "/projects/photobooth-camera.png",
+      "/projects/photobooth-countdown.png",
+      "/projects/photobooth-print-layout.png",
+      "/projects/photobooth-printing.png",
+      "/projects/photobooth-printer.png",
+      "/projects/photobooth-launch-page.png",
+    ],
+    url: "https://photobooth-ru7.pages.dev/",
+    about: "This photobooth application was developed for business owners who run photobooth services at events like weddings, parties, and corporate gatherings. The goal was to create a professional, browser-based solution that eliminates the need for complex software installations while delivering high-quality photo strip experiences for their clients.",
+    features: [
+      "Multi-photo capture with 3 or 4 images per strip and customizable countdown timers",
+      "Professional filters and effects including B&W, vintage, and high contrast options",
+      "Preset themes for weddings, parties, and corporate events with custom theme builder",
+      "Multiple camera input sources including webcam, HDMI, USB, and WiFi connections",
+      "Export options in PNG/JPEG formats with QR code sharing for instant delivery",
+      "Direct thermal printer support for 2x6 and 4x6 print sizes",
+    ],
+  },
+  {
     slug: "homes-system",
     name: "Homes System",
     description: "Admin System for all departments of the company",

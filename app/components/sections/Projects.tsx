@@ -10,6 +10,57 @@ import { ScrollReveal } from "@/components/common";
 import { useRouter } from "next/navigation";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { GlowingEffect } from "@/components/ui/glowing-effect";
+import type { Project } from "@/types";
+
+function ProjectCardImage({ project }: { project: Project }) {
+  const [imageError, setImageError] = useState(false);
+
+  const PlaceholderBackground = () => (
+    <div className={`absolute inset-0 ${
+      project.category === "vue"
+        ? "bg-gradient-to-br from-green-900/40 via-green-800/20 to-transparent"
+        : project.category === "react"
+        ? "bg-gradient-to-br from-cyan-900/40 via-cyan-800/20 to-transparent"
+        : "bg-gradient-to-br from-purple-900/40 via-purple-800/20 to-transparent"
+    }`}>
+      {/* Grid pattern overlay */}
+      <div className="absolute inset-0 opacity-10" style={{
+        backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+        backgroundSize: '30px 30px'
+      }} />
+
+      {/* Decorative elements */}
+      <div className={`absolute top-1/4 left-1/4 w-24 h-24 rounded-full blur-3xl opacity-30 ${
+        project.category === "vue" ? "bg-green-500" : project.category === "react" ? "bg-cyan-500" : "bg-purple-500"
+      }`} />
+      <div className={`absolute bottom-1/3 right-1/4 w-16 h-16 rounded-full blur-2xl opacity-20 ${
+        project.category === "vue" ? "bg-emerald-400" : project.category === "react" ? "bg-sky-400" : "bg-violet-400"
+      }`} />
+
+      {/* Code icon */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 group-hover:opacity-20 transition-opacity">
+        <CodeIcon size={128} />
+      </div>
+    </div>
+  );
+
+  if (!project.image || imageError) {
+    return <PlaceholderBackground />;
+  }
+
+  return (
+    <div className="absolute inset-0">
+      <img
+        src={project.image}
+        alt={project.name}
+        className="w-full h-full object-cover"
+        onError={() => setImageError(true)}
+      />
+      {/* Overlay gradient for text readability */}
+      <div className="absolute inset-0 bg-gradient-to-t from-card via-card/60 to-transparent" />
+    </div>
+  );
+}
 
 export function Projects() {
   const router = useRouter();
@@ -103,31 +154,8 @@ export function Projects() {
                   inactiveZone={0.01}
                 />
                 <div className="relative h-full w-full rounded-2xl overflow-hidden bg-card border border-border transition-all duration-300 group-hover:-translate-y-1">
-                      {/* Project Placeholder Background */}
-                      <div className={`absolute inset-0 ${
-                        project.category === "vue"
-                          ? "bg-gradient-to-br from-green-900/40 via-green-800/20 to-transparent"
-                          : "bg-gradient-to-br from-purple-900/40 via-purple-800/20 to-transparent"
-                      }`}>
-                        {/* Grid pattern overlay */}
-                        <div className="absolute inset-0 opacity-10" style={{
-                          backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-                          backgroundSize: '30px 30px'
-                        }} />
-
-                        {/* Decorative elements */}
-                        <div className={`absolute top-1/4 left-1/4 w-24 h-24 rounded-full blur-3xl opacity-30 ${
-                          project.category === "vue" ? "bg-green-500" : "bg-purple-500"
-                        }`} />
-                        <div className={`absolute bottom-1/3 right-1/4 w-16 h-16 rounded-full blur-2xl opacity-20 ${
-                          project.category === "vue" ? "bg-emerald-400" : "bg-violet-400"
-                        }`} />
-
-                        {/* Code icon */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 group-hover:opacity-20 transition-opacity">
-                          <CodeIcon size={128} />
-                        </div>
-                      </div>
+                      {/* Project Image or Placeholder Background */}
+                      <ProjectCardImage project={project} />
 
                       {/* Content at bottom */}
                       <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 bg-gradient-to-t from-card via-card/80 to-transparent">
@@ -147,10 +175,12 @@ export function Projects() {
                           className={`${
                             project.category === "vue"
                               ? "border-green-500/50 text-green-400 bg-green-500/10"
+                              : project.category === "react"
+                              ? "border-cyan-500/50 text-cyan-400 bg-cyan-500/10"
                               : "border-purple-500/50 text-purple-400 bg-purple-500/10"
                           }`}
                         >
-                          {project.category === "vue" ? "Vue/Node.js" : "PHP"}
+                          {project.category === "vue" ? "Vue/Node.js" : project.category === "react" ? "React/Next.js" : "PHP"}
                         </Badge>
                       </div>
 

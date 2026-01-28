@@ -27,4 +27,5 @@ export { CheckIcon } from "./CheckIcon";
 export { CheckCircleIcon } from "./CheckCircleIcon";
 export { CodeIcon } from "./CodeIcon";
 export { DragIcon } from "./DragIcon";
+export { ExternalLinkIcon } from "./ExternalLinkIcon";
 export { ImageIcon } from "./ImageIcon";

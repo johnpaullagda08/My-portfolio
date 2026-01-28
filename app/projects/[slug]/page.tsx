@@ -3,8 +3,9 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
 import { projects, profile } from "@/lib/data";
-import { ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon, ImageIcon } from "@/components/icons";
+import { ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon, ExternalLinkIcon } from "@/components/icons";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -66,10 +67,16 @@ export default function ProjectPage({ params }: ProjectPageProps) {
               className={`mb-4 ${
                 project.category === "vue"
                   ? "border-green-500/50 text-green-400"
+                  : project.category === "react"
+                  ? "border-cyan-500/50 text-cyan-400"
                   : "border-purple-500/50 text-purple-400"
               }`}
             >
-              {project.category === "vue" ? "Vue/Node.js" : "PHP"}
+              {project.category === "vue"
+                ? "Vue/Node.js"
+                : project.category === "react"
+                ? "React/Next.js"
+                : "PHP"}
             </Badge>
 
             {/* Title */}
@@ -83,45 +90,59 @@ export default function ProjectPage({ params }: ProjectPageProps) {
             </p>
 
             {/* Tech Stack */}
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 mb-8">
               {project.tech.map((tech) => (
                 <Badge key={tech} variant="secondary" className="text-sm">
                   {tech}
                 </Badge>
               ))}
             </div>
+
+            {/* View Live Button */}
+            {project.url && (
+              <Button asChild>
+                <a
+                  href={project.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2"
+                >
+                  View Live
+                  <ExternalLinkIcon size={16} />
+                </a>
+              </Button>
+            )}
           </motion.div>
         </div>
       </section>
 
-      {/* Project Image */}
-      <section className="pb-20">
-        <div className="container mx-auto px-6 md:px-12 lg:px-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="relative aspect-video max-w-5xl mx-auto rounded-xl overflow-hidden bg-secondary border border-border"
-          >
-            <Image
-              src={project.image}
-              alt={project.name}
-              fill
-              className="object-cover"
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-              }}
+      {/* Project Images Carousel */}
+      {project.images && project.images.length > 0 && (
+        <section className="pb-20">
+          <div className="w-full">
+            <Carousel
+              items={project.images.map((image, index) => (
+                <Card
+                  key={index}
+                  index={index}
+                  card={{
+                    src: image,
+                    title: `${project.name} Screenshot ${index + 1}`,
+                    category: project.category === "vue" ? "Vue/Node.js" : project.category === "react" ? "React/Next.js" : "PHP",
+                    content: (
+                      <div className="bg-[#F5F5F7] dark:bg-neutral-800 p-8 md:p-14 rounded-3xl mb-4">
+                        <p className="text-neutral-600 dark:text-neutral-400 text-base md:text-2xl font-sans max-w-3xl mx-auto">
+                          {project.description}
+                        </p>
+                      </div>
+                    ),
+                  }}
+                />
+              ))}
             />
-            {/* Placeholder when no image */}
-            <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-              <div className="text-center">
-                <ImageIcon size={64} className="mx-auto mb-4" />
-                <p>Project screenshot coming soon</p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
       {/* Project Details */}
       <section className="pb-20">
@@ -136,16 +157,24 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                 About this project
               </h2>
               <div className="prose prose-invert max-w-none">
-                <p className="text-muted-foreground leading-relaxed mb-6">
-                  This project was developed as part of my work at HRD Singapore
-                  PTE LTD. It showcases my ability to build full-stack
-                  applications that solve real business problems.
-                </p>
-                <p className="text-muted-foreground leading-relaxed mb-6">
-                  The system was built using {project.tech.join(", ")} and
-                  demonstrates my expertise in both frontend and backend
-                  development.
-                </p>
+                {project.about ? (
+                  <p className="text-muted-foreground leading-relaxed mb-6">
+                    {project.about}
+                  </p>
+                ) : (
+                  <>
+                    <p className="text-muted-foreground leading-relaxed mb-6">
+                      This project was developed as part of my work at HRD Singapore
+                      PTE LTD. It showcases my ability to build full-stack
+                      applications that solve real business problems.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed mb-6">
+                      The system was built using {project.tech.join(", ")} and
+                      demonstrates my expertise in both frontend and backend
+                      development.
+                    </p>
+                  </>
+                )}
               </div>
 
               {/* Key Features */}
@@ -153,30 +182,43 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                 Key Features
               </h3>
               <ul className="space-y-3">
-                <li className="flex items-start gap-3 text-muted-foreground">
-                  <span className="text-primary mt-1">
-                    <CheckCircleIcon size={20} />
-                  </span>
-                  User-friendly interface designed for efficiency
-                </li>
-                <li className="flex items-start gap-3 text-muted-foreground">
-                  <span className="text-primary mt-1">
-                    <CheckCircleIcon size={20} />
-                  </span>
-                  Robust backend with secure data handling
-                </li>
-                <li className="flex items-start gap-3 text-muted-foreground">
-                  <span className="text-primary mt-1">
-                    <CheckCircleIcon size={20} />
-                  </span>
-                  Integration with company databases and systems
-                </li>
-                <li className="flex items-start gap-3 text-muted-foreground">
-                  <span className="text-primary mt-1">
-                    <CheckCircleIcon size={20} />
-                  </span>
-                  Automated workflows to improve productivity
-                </li>
+                {project.features ? (
+                  project.features.map((feature, index) => (
+                    <li key={index} className="flex items-start gap-3 text-muted-foreground">
+                      <span className="text-primary mt-1">
+                        <CheckCircleIcon size={20} />
+                      </span>
+                      {feature}
+                    </li>
+                  ))
+                ) : (
+                  <>
+                    <li className="flex items-start gap-3 text-muted-foreground">
+                      <span className="text-primary mt-1">
+                        <CheckCircleIcon size={20} />
+                      </span>
+                      User-friendly interface designed for efficiency
+                    </li>
+                    <li className="flex items-start gap-3 text-muted-foreground">
+                      <span className="text-primary mt-1">
+                        <CheckCircleIcon size={20} />
+                      </span>
+                      Robust backend with secure data handling
+                    </li>
+                    <li className="flex items-start gap-3 text-muted-foreground">
+                      <span className="text-primary mt-1">
+                        <CheckCircleIcon size={20} />
+                      </span>
+                      Integration with company databases and systems
+                    </li>
+                    <li className="flex items-start gap-3 text-muted-foreground">
+                      <span className="text-primary mt-1">
+                        <CheckCircleIcon size={20} />
+                      </span>
+                      Automated workflows to improve productivity
+                    </li>
+                  </>
+                )}
               </ul>
             </motion.div>
           </div>
