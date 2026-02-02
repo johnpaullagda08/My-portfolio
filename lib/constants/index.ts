@@ -10,3 +10,10 @@ export {
 } from "./animation";
 
 export { SCROLL_THRESHOLD, DRAG_CONSTRAINTS } from "./scroll";
+
+export {
+  CATEGORY_CONFIG,
+  getCategoryConfig,
+  getCategoryBadgeClasses,
+  type CategoryConfig,
+} from "./category";

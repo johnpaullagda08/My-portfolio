@@ -1,28 +1,24 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { motion, PanInfo } from "framer-motion";
+import { motion, PanInfo, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { projects } from "@/lib/data";
-import { DRAG_CONSTRAINTS } from "@/lib/constants";
+import { DRAG_CONSTRAINTS, getCategoryConfig, getCategoryBadgeClasses } from "@/lib/constants";
 import { ArrowRightIcon, CodeIcon, DragIcon } from "@/components/icons";
 import { ScrollReveal } from "@/components/common";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { GlowingEffect } from "@/components/ui/glowing-effect";
 import type { Project } from "@/types";
 
 function ProjectCardImage({ project }: { project: Project }) {
   const [imageError, setImageError] = useState(false);
+  const categoryConfig = getCategoryConfig(project.category);
 
   const PlaceholderBackground = () => (
-    <div className={`absolute inset-0 ${
-      project.category === "vue"
-        ? "bg-gradient-to-br from-green-900/40 via-green-800/20 to-transparent"
-        : project.category === "react"
-        ? "bg-gradient-to-br from-cyan-900/40 via-cyan-800/20 to-transparent"
-        : "bg-gradient-to-br from-purple-900/40 via-purple-800/20 to-transparent"
-    }`}>
+    <div className={`absolute inset-0 ${categoryConfig.gradientClass}`}>
       {/* Grid pattern overlay */}
       <div className="absolute inset-0 opacity-10" style={{
         backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
@@ -30,12 +26,8 @@ function ProjectCardImage({ project }: { project: Project }) {
       }} />
 
       {/* Decorative elements */}
-      <div className={`absolute top-1/4 left-1/4 w-24 h-24 rounded-full blur-3xl opacity-30 ${
-        project.category === "vue" ? "bg-green-500" : project.category === "react" ? "bg-cyan-500" : "bg-purple-500"
-      }`} />
-      <div className={`absolute bottom-1/3 right-1/4 w-16 h-16 rounded-full blur-2xl opacity-20 ${
-        project.category === "vue" ? "bg-emerald-400" : project.category === "react" ? "bg-sky-400" : "bg-violet-400"
-      }`} />
+      <div className={`absolute top-1/4 left-1/4 w-24 h-24 rounded-full blur-3xl opacity-30 ${categoryConfig.glowClass}`} />
+      <div className={`absolute bottom-1/3 right-1/4 w-16 h-16 rounded-full blur-2xl opacity-20 ${categoryConfig.glowClass}`} />
 
       {/* Code icon */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -50,10 +42,12 @@ function ProjectCardImage({ project }: { project: Project }) {
 
   return (
     <div className="absolute inset-0">
-      <img
+      <Image
         src={project.image}
         alt={project.name}
-        className="w-full h-full object-cover"
+        fill
+        sizes="(max-width: 640px) 280px, (max-width: 768px) 320px, 380px"
+        className="object-cover"
         onError={() => setImageError(true)}
       />
       {/* Overlay gradient for text readability */}
@@ -62,12 +56,26 @@ function ProjectCardImage({ project }: { project: Project }) {
   );
 }
 
+type FilterCategory = "all" | "react" | "vue" | "php";
+
+const filterTabs: { key: FilterCategory; label: string }[] = [
+  { key: "all", label: "All" },
+  { key: "react", label: "React" },
+  { key: "vue", label: "Vue" },
+  { key: "php", label: "PHP" },
+];
+
 export function Projects() {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const [dragConstraints, setDragConstraints] = useState({ left: 0, right: 0 });
   const [isDragging, setIsDragging] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<FilterCategory>("all");
   const dragStartX = useRef(0);
+
+  const filteredProjects = activeFilter === "all"
+    ? projects
+    : projects.filter(p => p.category === activeFilter);
 
   useEffect(() => {
     const updateConstraints = () => {
@@ -81,10 +89,14 @@ export function Projects() {
       }
     };
 
-    updateConstraints();
+    // Small delay to allow DOM to update after filter change
+    const timeoutId = setTimeout(updateConstraints, 50);
     window.addEventListener("resize", updateConstraints);
-    return () => window.removeEventListener("resize", updateConstraints);
-  }, []);
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener("resize", updateConstraints);
+    };
+  }, [activeFilter]);
 
   const handleDragStart = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     dragStartX.current = info.point.x;
@@ -116,6 +128,28 @@ export function Projects() {
           <p className="text-muted-foreground mt-4 max-w-xl">
             A collection of projects I&apos;ve built. Drag to explore, click to view details.
           </p>
+
+          {/* Filter Tabs */}
+          <div className="flex flex-wrap gap-2 mt-8">
+            {filterTabs.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveFilter(tab.key)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  activeFilter === tab.key
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                }`}
+              >
+                {tab.label}
+                <span className="ml-2 text-xs opacity-70">
+                  ({tab.key === "all"
+                    ? projects.length
+                    : projects.filter(p => p.category === tab.key).length})
+                </span>
+              </button>
+            ))}
+          </div>
         </ScrollReveal>
       </div>
 
@@ -133,13 +167,15 @@ export function Projects() {
           onDragEnd={handleDragEnd}
           className="flex gap-4 md:gap-6 pl-6 md:pl-20 pr-6 md:pr-20"
         >
-          {projects.map((project, index) => (
+          <AnimatePresence mode="popLayout">
+          {filteredProjects.map((project, index) => (
             <motion.div
               key={project.slug}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.05 }}
+              layout
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3, delay: index * 0.03 }}
               className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[380px] h-[350px] sm:h-[400px] md:h-[480px]"
             >
               <div
@@ -172,15 +208,9 @@ export function Projects() {
                         {/* Category Badge */}
                         <Badge
                           variant="outline"
-                          className={`${
-                            project.category === "vue"
-                              ? "border-green-500/50 text-green-400 bg-green-500/10"
-                              : project.category === "react"
-                              ? "border-cyan-500/50 text-cyan-400 bg-cyan-500/10"
-                              : "border-purple-500/50 text-purple-400 bg-purple-500/10"
-                          }`}
+                          className={getCategoryBadgeClasses(project.category)}
                         >
-                          {project.category === "vue" ? "Vue/Node.js" : project.category === "react" ? "React/Next.js" : "PHP"}
+                          {getCategoryConfig(project.category).label}
                         </Badge>
                       </div>
 
@@ -192,6 +222,7 @@ export function Projects() {
               </div>
             </motion.div>
           ))}
+          </AnimatePresence>
         </motion.div>
       </div>
 

@@ -29,3 +29,4 @@ export { CodeIcon } from "./CodeIcon";
 export { DragIcon } from "./DragIcon";
 export { ExternalLinkIcon } from "./ExternalLinkIcon";
 export { ImageIcon } from "./ImageIcon";
+export { FeatureIcon } from "./FeatureIcon";

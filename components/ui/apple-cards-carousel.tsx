@@ -299,6 +299,8 @@ export const BlurImage = ({
   src,
   className,
   alt,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  blurDataURL: _blurDataURL,
   ...rest
 }: ImageProps) => {
   const [isLoading, setLoading] = useState(true);
@@ -315,7 +317,6 @@ export const BlurImage = ({
       height={height}
       loading="lazy"
       decoding="async"
-      blurDataURL={typeof src === "string" ? src : undefined}
       alt={alt ? alt : "Background of a beautiful view"}
       {...rest}
     />
