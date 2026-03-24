@@ -301,6 +301,8 @@ export const BlurImage = ({
   alt,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   blurDataURL: _blurDataURL,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  fill: _fill,
   ...rest
 }: ImageProps) => {
   const [isLoading, setLoading] = useState(true);

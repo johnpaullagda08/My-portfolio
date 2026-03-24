@@ -7,7 +7,7 @@ import { profile } from "@/lib/data";
 export function About() {
   const stats = [
     { label: "Years Experience", value: "7+" },
-    { label: "Projects Completed", value: "14+" },
+    { label: "Projects Completed", value: "15+" },
     { label: "Technologies", value: "15+" },
   ];
 

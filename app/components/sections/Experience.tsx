@@ -2,6 +2,18 @@
 
 import { ScrollReveal } from "@/components/common";
 import { Spotlight } from "@/components/ui/spotlight";
+import {
+  IconBrandVue,
+  IconBrandReact,
+  IconBrandNextjs,
+  IconBrandNodejs,
+  IconBrandPhp,
+  IconBrandJavascript,
+  IconBrandTypescript,
+  IconBrandMysql,
+  IconBrandGit,
+} from "@tabler/icons-react";
+import { CodeIcon } from "@/components/icons";
 
 export function Experience() {
   const whatIBuild = [
@@ -15,17 +27,17 @@ export function Experience() {
   ];
 
   const techStack = [
-    { name: "Vue.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg" },
-    { name: "React", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
-    { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" },
-    { name: "Node.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
-    { name: "PHP", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" },
-    { name: "JavaScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" },
-    { name: "TypeScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" },
-    { name: "MySQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
-    { name: "Git", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" },
-    { name: "shadcn/ui", icon: "https://avatars.githubusercontent.com/u/139895814?s=200&v=4" },
-    { name: "Claude Code", icon: "https://www.anthropic.com/images/icons/apple-touch-icon.png" },
+    { name: "Vue.js", icon: IconBrandVue },
+    { name: "React", icon: IconBrandReact },
+    { name: "Next.js", icon: IconBrandNextjs },
+    { name: "Node.js", icon: IconBrandNodejs },
+    { name: "PHP", icon: IconBrandPhp },
+    { name: "JavaScript", icon: IconBrandJavascript },
+    { name: "TypeScript", icon: IconBrandTypescript },
+    { name: "MySQL", icon: IconBrandMysql },
+    { name: "Git", icon: IconBrandGit },
+    { name: "shadcn/ui", icon: CodeIcon },
+    { name: "Claude Code", icon: CodeIcon },
   ];
 
   return (
@@ -65,25 +77,22 @@ export function Experience() {
               HOW I BUILD IT
             </h3>
             <div className="flex flex-wrap gap-6 md:gap-8">
-              {techStack.map((tech) => (
-                <div
-                  key={tech.name}
-                  className="group flex flex-col items-center gap-2"
-                  title={tech.name}
-                >
-                  <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={tech.icon}
-                      alt={tech.name}
-                      className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all"
-                    />
+              {techStack.map((tech) => {
+                const Icon = tech.icon;
+                return (
+                  <div
+                    key={tech.name}
+                    className="group flex flex-col items-center gap-2"
+                  >
+                    <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-muted-foreground group-hover:text-primary transition-colors">
+                      <Icon className="w-full h-full" aria-hidden="true" />
+                    </div>
+                    <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">
+                      {tech.name}
+                    </span>
                   </div>
-                  <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                    {tech.name}
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </ScrollReveal>
@@ -113,15 +122,15 @@ export function Experience() {
                   </p>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
-                      <span className="text-primary mt-1">•</span>
+                      <span className="text-primary mt-1" aria-hidden="true">•</span>
                       Develop web applications for various departments
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-primary mt-1">•</span>
+                      <span className="text-primary mt-1" aria-hidden="true">•</span>
                       Maintain SQL, MySQL, NoSQL databases
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-primary mt-1">•</span>
+                      <span className="text-primary mt-1" aria-hidden="true">•</span>
                       Train team members in Full Stack JavaScript
                     </li>
                   </ul>

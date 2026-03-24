@@ -7,7 +7,7 @@ export default function Home() {
     <>
       <Preloader />
       <Navbar />
-      <main>
+      <main id="main-content">
         <Hero />
         <About />
         <Skills />

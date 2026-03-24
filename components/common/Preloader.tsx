@@ -1,37 +1,78 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { EASE_OUT_EXPO, ANIMATION_DURATION_MS } from "@/lib/constants";
 
-// Scattered elements configuration - positions for scatter effect
+// SVG geometric shapes replacing emojis for cross-platform consistency
 const SCATTER_ELEMENTS = [
-  { id: 1, icon: "⚛", color: "#61DAFB", finalX: -200, finalY: -150, rotation: -15 },
-  { id: 2, icon: "🟢", color: "#3ECC5F", finalX: 180, finalY: -120, rotation: 20 },
-  { id: 3, icon: "🔷", color: "#3178C6", finalX: -150, finalY: 100, rotation: -25 },
-  { id: 4, icon: "🟣", color: "#8B5CF6", finalX: 200, finalY: 80, rotation: 15 },
-  { id: 5, icon: "🔶", color: "#F7DF1E", finalX: -80, finalY: -180, rotation: 30 },
-  { id: 6, icon: "🔵", color: "#3B82F6", finalX: 120, finalY: 160, rotation: -20 },
-  { id: 7, icon: "⬡", color: "#68A063", finalX: -220, finalY: 20, rotation: 10 },
-  { id: 8, icon: "◆", color: "#FF6B6B", finalX: 250, finalY: -50, rotation: -10 },
+  { id: 1, shape: "circle", color: "#61DAFB", finalX: -200, finalY: -150, rotation: -15 },
+  { id: 2, shape: "hexagon", color: "#3ECC5F", finalX: 180, finalY: -120, rotation: 20 },
+  { id: 3, shape: "diamond", color: "#3178C6", finalX: -150, finalY: 100, rotation: -25 },
+  { id: 4, shape: "triangle", color: "#8B5CF6", finalX: 200, finalY: 80, rotation: 15 },
+  { id: 5, shape: "square", color: "#F7DF1E", finalX: -80, finalY: -180, rotation: 30 },
+  { id: 6, shape: "circle", color: "#3B82F6", finalX: 120, finalY: 160, rotation: -20 },
+  { id: 7, shape: "hexagon", color: "#68A063", finalX: -220, finalY: 20, rotation: 10 },
+  { id: 8, shape: "diamond", color: "#FF6B6B", finalX: 250, finalY: -50, rotation: -10 },
 ];
+
+function ShapeIcon({ shape, color }: { shape: string; color: string }) {
+  const svgProps = { width: 24, height: 24, viewBox: "0 0 24 24", fill: "none" };
+
+  switch (shape) {
+    case "circle":
+      return (
+        <svg {...svgProps} aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke={color} strokeWidth="2" fill={`${color}30`} />
+        </svg>
+      );
+    case "hexagon":
+      return (
+        <svg {...svgProps} aria-hidden="true">
+          <polygon points="12,2 22,7 22,17 12,22 2,17 2,7" stroke={color} strokeWidth="2" fill={`${color}30`} />
+        </svg>
+      );
+    case "diamond":
+      return (
+        <svg {...svgProps} aria-hidden="true">
+          <polygon points="12,2 22,12 12,22 2,12" stroke={color} strokeWidth="2" fill={`${color}30`} />
+        </svg>
+      );
+    case "triangle":
+      return (
+        <svg {...svgProps} aria-hidden="true">
+          <polygon points="12,3 22,21 2,21" stroke={color} strokeWidth="2" fill={`${color}30`} />
+        </svg>
+      );
+    case "square":
+      return (
+        <svg {...svgProps} aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="2" stroke={color} strokeWidth="2" fill={`${color}30`} />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
 
 export function Preloader() {
   const [phase, setPhase] = useState<"scatter" | "gather" | "exit">("scatter");
   const [isComplete, setIsComplete] = useState(false);
 
+  const dismiss = useCallback(() => {
+    setPhase("exit");
+    setTimeout(() => setIsComplete(true), 400);
+  }, []);
+
   useEffect(() => {
-    // Phase 1: Scatter (elements fly outward)
     const scatterTimer = setTimeout(() => {
       setPhase("gather");
     }, 800);
 
-    // Phase 2: Gather (elements come back and scale up)
     const gatherTimer = setTimeout(() => {
       setPhase("exit");
     }, 1600);
 
-    // Phase 3: Exit (slide up and fade out)
     const exitTimer = setTimeout(() => {
       setIsComplete(true);
     }, ANIMATION_DURATION_MS.preloader);
@@ -54,6 +95,19 @@ export function Preloader() {
       document.body.style.overflow = "";
     };
   }, [isComplete]);
+
+  // Allow keyboard dismiss
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" || e.key === "Enter" || e.key === " ") {
+        dismiss();
+      }
+    };
+    if (!isComplete) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isComplete, dismiss]);
 
   const getElementVariants = (element: typeof SCATTER_ELEMENTS[0]) => ({
     initial: {
@@ -105,7 +159,10 @@ export function Preloader() {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
-          className="fixed inset-0 z-[100] bg-background flex items-center justify-center overflow-hidden"
+          className="fixed inset-0 z-[100] bg-background flex items-center justify-center overflow-hidden cursor-pointer"
+          onClick={dismiss}
+          role="status"
+          aria-label="Loading portfolio"
         >
           {/* Scattered elements container */}
           <div className="relative w-full h-full flex items-center justify-center">
@@ -118,7 +175,6 @@ export function Preloader() {
                 animate={phase}
                 custom={index}
                 style={{
-                  fontSize: "3rem",
                   filter: `drop-shadow(0 0 20px ${element.color}40)`,
                 }}
                 transition={{
@@ -134,9 +190,7 @@ export function Preloader() {
                     boxShadow: `0 0 30px ${element.color}30`,
                   }}
                 >
-                  <span style={{ color: element.color, fontSize: "1.5rem" }}>
-                    {element.icon}
-                  </span>
+                  <ShapeIcon shape={element.shape} color={element.color} />
                 </div>
               </motion.div>
             ))}
@@ -171,9 +225,9 @@ export function Preloader() {
             <div className="absolute inset-0 bg-gradient-radial from-primary/10 via-transparent to-transparent" />
           </motion.div>
 
-          {/* Progress indicator */}
+          {/* Progress indicator + skip hint */}
           <motion.div
-            className="absolute bottom-12 left-1/2 -translate-x-1/2"
+            className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
@@ -195,6 +249,7 @@ export function Preloader() {
                 />
               ))}
             </div>
+            <span className="text-xs text-muted-foreground">Click or press any key to skip</span>
           </motion.div>
         </motion.div>
       )}

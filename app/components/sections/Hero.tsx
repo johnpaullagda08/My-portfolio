@@ -79,7 +79,7 @@ export function Hero() {
                 href={profile.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-muted-foreground hover:text-primary hover:bg-secondary/50 transition-colors"
                 aria-label="GitHub"
                 data-cursor-hover
               >
@@ -89,7 +89,7 @@ export function Hero() {
                 href={profile.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-muted-foreground hover:text-primary hover:bg-secondary/50 transition-colors"
                 aria-label="LinkedIn"
                 data-cursor-hover
               >

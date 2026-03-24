@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useSyncExternalStore } from "react";
+import { useState, useEffect, useRef, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
@@ -20,35 +20,44 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [scrollProgress, setScrollProgress] = useState(0);
+  const rafRef = useRef<number>(0);
   const mounted = useSyncExternalStore(emptySubscribe, getSnapshot, getServerSnapshot);
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > SCROLL_THRESHOLD.navbarBg);
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        setIsScrolled(window.scrollY > SCROLL_THRESHOLD.navbarBg);
 
-      // Calculate scroll progress
-      const winScroll = document.documentElement.scrollTop;
-      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scrolled = (winScroll / height) * 100;
-      setScrollProgress(scrolled);
+        // Calculate scroll progress
+        const winScroll = document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        setScrollProgress(scrolled);
 
-      // Determine active section
-      const sections = navLinks.map((link) => link.href.replace("#", ""));
-      const scrollPosition = window.scrollY + SCROLL_THRESHOLD.sectionActive;
+        // Determine active section
+        const sections = navLinks.map((link) => link.href.replace("#", ""));
+        const scrollPosition = window.scrollY + SCROLL_THRESHOLD.sectionActive;
 
-      for (const section of sections.reverse()) {
-        const element = document.getElementById(section);
-        if (element && element.offsetTop <= scrollPosition) {
-          setActiveSection(section);
-          break;
+        for (const section of [...sections].reverse()) {
+          const element = document.getElementById(section);
+          if (element && element.offsetTop <= scrollPosition) {
+            setActiveSection(section);
+            break;
+          }
         }
-      }
+
+        rafRef.current = 0;
+      });
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   return (
@@ -114,7 +123,7 @@ export function Navbar() {
               {/* Theme Toggle */}
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                className="inline-flex items-center justify-center w-10 h-10 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
                 aria-label="Toggle theme"
               >
                 {mounted && (
@@ -133,9 +142,10 @@ export function Navbar() {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden text-foreground p-2"
+              className="md:hidden inline-flex items-center justify-center w-11 h-11 rounded-lg text-foreground hover:bg-secondary transition-colors"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle menu"
+              aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? (
                 <CloseIcon size={24} />

@@ -1,13 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { profile } from "@/lib/data";
 import Link from "next/link";
 import Image from "next/image";
 import { ScrollReveal } from "@/components/common";
+import { CheckCircleIcon } from "@/components/icons";
 
 export function CTA() {
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+
   const pageLinks = [
     { name: "ABOUT", href: "#about" },
     { name: "SKILLS", href: "#skills" },
@@ -18,6 +24,32 @@ export function CTA() {
     { name: "GITHUB", href: profile.github },
     { name: "LINKEDIN", href: profile.linkedin },
   ];
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("loading");
+    setErrorMessage("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send message");
+      }
+
+      setStatus("success");
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      setStatus("error");
+      setErrorMessage(error instanceof Error ? error.message : "Something went wrong. Please try again.");
+    }
+  };
 
   return (
     <section className="py-20 md:py-28 bg-secondary/20 relative overflow-hidden">
@@ -73,67 +105,118 @@ export function CTA() {
           {/* Middle - Contact Form */}
           <ScrollReveal>
             <div>
-              <form className="space-y-6">
-                <div>
-                  <label
-                    htmlFor="cta-name"
-                    className="block text-sm text-muted-foreground mb-2"
+              {status === "success" ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mb-4">
+                    <CheckCircleIcon size={32} className="text-green-500" />
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground mb-2">Message Sent!</h3>
+                  <p className="text-muted-foreground text-sm mb-6">
+                    Thanks for reaching out. I&apos;ll get back to you soon.
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setStatus("idle")}
                   >
-                    YOUR NAME *
-                  </label>
-                  <input
-                    type="text"
-                    id="cta-name"
-                    name="name"
-                    required
-                    className="w-full bg-transparent border-b border-border py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
-                  />
+                    Send Another
+                  </Button>
                 </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {status === "error" && (
+                    <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg" role="alert">
+                      <p className="text-red-500 text-sm">{errorMessage}</p>
+                    </div>
+                  )}
 
-                <div>
-                  <label
-                    htmlFor="cta-email"
-                    className="block text-sm text-muted-foreground mb-2"
+                  <div>
+                    <label
+                      htmlFor="cta-name"
+                      className="block text-sm text-muted-foreground mb-2"
+                    >
+                      YOUR NAME *
+                    </label>
+                    <input
+                      type="text"
+                      id="cta-name"
+                      name="name"
+                      autoComplete="name"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      disabled={status === "loading"}
+                      className="w-full bg-transparent border-b border-border py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="cta-email"
+                      className="block text-sm text-muted-foreground mb-2"
+                    >
+                      YOUR EMAIL *
+                    </label>
+                    <input
+                      type="email"
+                      id="cta-email"
+                      name="email"
+                      autoComplete="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      disabled={status === "loading"}
+                      className="w-full bg-transparent border-b border-border py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="cta-message"
+                      className="block text-sm text-muted-foreground mb-2"
+                    >
+                      TELL ME ABOUT YOUR PROJECT *
+                    </label>
+                    <textarea
+                      id="cta-message"
+                      name="message"
+                      rows={3}
+                      required
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      disabled={status === "loading"}
+                      className="w-full bg-transparent border-b border-border py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors resize-none disabled:opacity-50"
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full mt-8"
+                    disabled={status === "loading"}
                   >
-                    YOUR EMAIL *
-                  </label>
-                  <input
-                    type="email"
-                    id="cta-email"
-                    name="email"
-                    required
-                    className="w-full bg-transparent border-b border-border py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
-                  />
-                </div>
+                    {status === "loading" ? (
+                      <span className="flex items-center gap-2">
+                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        Sending...
+                      </span>
+                    ) : (
+                      "Send"
+                    )}
+                  </Button>
 
-                <div>
-                  <label
-                    htmlFor="cta-message"
-                    className="block text-sm text-muted-foreground mb-2"
-                  >
-                    TELL ME ABOUT YOUR PROJECT *
-                  </label>
-                  <textarea
-                    id="cta-message"
-                    name="message"
-                    rows={3}
-                    required
-                    className="w-full bg-transparent border-b border-border py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors resize-none"
-                  />
-                </div>
-
-                <Button type="submit" size="lg" className="w-full mt-8">
-                  Send
-                </Button>
-
-                <p className="text-xs text-muted-foreground text-center">
-                  * By submitting this form, you agree to our{" "}
-                  <Link href="/contact" className="text-primary hover:underline">
-                    Policies
-                  </Link>
-                  .
-                </p>
-              </form>
+                  <p className="text-xs text-muted-foreground text-center">
+                    * By submitting this form, you agree to our{" "}
+                    <Link href="/contact" className="text-primary hover:underline">
+                      Policies
+                    </Link>
+                    .
+                  </p>
+                </form>
+              )}
             </div>
           </ScrollReveal>
 

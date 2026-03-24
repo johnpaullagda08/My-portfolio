@@ -7,8 +7,8 @@ import { projects } from "@/lib/data";
 import { DRAG_CONSTRAINTS, getCategoryConfig, getCategoryBadgeClasses } from "@/lib/constants";
 import { ArrowRightIcon, CodeIcon, DragIcon } from "@/components/icons";
 import { ScrollReveal } from "@/components/common";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { GlowingEffect } from "@/components/ui/glowing-effect";
 import type { Project } from "@/types";
@@ -66,7 +66,6 @@ const filterTabs: { key: FilterCategory; label: string }[] = [
 ];
 
 export function Projects() {
-  const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const [dragConstraints, setDragConstraints] = useState({ left: 0, right: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -106,13 +105,6 @@ export function Projects() {
   const handleDragEnd = () => {
     // Small delay to allow click handler to check isDragging
     setTimeout(() => setIsDragging(false), 100);
-  };
-
-  const handleCardClick = (slug: string) => {
-    // Only navigate if not dragging (less than 10px movement)
-    if (!isDragging) {
-      router.push(`/projects/${slug}`);
-    }
   };
 
   return (
@@ -178,9 +170,10 @@ export function Projects() {
               transition={{ duration: 0.3, delay: index * 0.03 }}
               className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[380px] h-[350px] sm:h-[400px] md:h-[480px]"
             >
-              <div
-                onClick={() => handleCardClick(project.slug)}
-                className="group relative block cursor-pointer h-full w-full rounded-2xl"
+              <Link
+                href={`/projects/${project.slug}`}
+                onClick={(e) => { if (isDragging) e.preventDefault(); }}
+                className="group relative block h-full w-full rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
               >
                 <GlowingEffect
                   spread={40}
@@ -214,12 +207,12 @@ export function Projects() {
                         </Badge>
                       </div>
 
-                  {/* Hover Arrow */}
-                  <div className="absolute top-5 right-5 w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary opacity-0 group-hover:opacity-100 transition-all group-hover:bg-primary group-hover:text-primary-foreground">
+                  {/* Arrow indicator - visible on mobile, enhanced on hover */}
+                  <div className="absolute top-5 right-5 w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary opacity-60 md:opacity-0 md:group-hover:opacity-100 transition-all group-hover:bg-primary group-hover:text-primary-foreground">
                     <ArrowRightIcon size={20} />
                   </div>
                 </div>
-              </div>
+              </Link>
             </motion.div>
           ))}
           </AnimatePresence>
