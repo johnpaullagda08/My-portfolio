@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import Link from "next/link";
 import { profile } from "@/lib/data";
 import { TechStack3D, AnimatedText, ScrollRevealWipe } from "@/components/common";
 import { AuroraBackground } from "@/components/ui/aurora-background";
@@ -137,12 +138,14 @@ export function Hero() {
                 <Button
                   size="lg"
                   variant="outline"
-                  onClick={() => scrollToId("contact")}
+                  asChild
                   className="h-11 px-6 border-border/80 bg-background/40 backdrop-blur-sm hover:bg-secondary/60"
                   data-cursor-hover
                 >
-                  <EmailIcon size={16} />
-                  Get in Touch
+                  <Link href="/contact">
+                    <EmailIcon size={16} />
+                    Get in Touch
+                  </Link>
                 </Button>
               </motion.div>
 
