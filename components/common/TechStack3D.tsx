@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ANIMATION_DURATION_MS, RING_ROTATION_DURATION } from "@/lib/constants";
+import { getYearsOfExperience } from "@/lib/data";
 
 export function TechStack3D() {
   const [yearsCount, setYearsCount] = useState(0);
-  const targetYears = 7;
+  const reducedMotion = useReducedMotion();
+  const targetYears = getYearsOfExperience();
 
   useEffect(() => {
     const duration = ANIMATION_DURATION_MS.counterDuration;
@@ -25,19 +27,19 @@ export function TechStack3D() {
     }, duration / steps);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [targetYears]);
 
   return (
     <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] perspective-1000">
       {/* Central glowing orb */}
       <motion.div
-        animate={{
+        animate={reducedMotion ? { scale: 1, opacity: 0.45 } : {
           scale: [1, 1.2, 1],
           opacity: [0.3, 0.6, 0.3],
         }}
         transition={{
           duration: 4,
-          repeat: Infinity,
+          repeat: reducedMotion ? 0 : Infinity,
           ease: "easeInOut",
         }}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-40 md:h-40 rounded-full bg-primary/30 blur-2xl"
@@ -45,8 +47,8 @@ export function TechStack3D() {
 
       {/* Inner rotating ring */}
       <motion.div
-        animate={{ rotateZ: 360 }}
-        transition={{ duration: RING_ROTATION_DURATION.inner, repeat: Infinity, ease: "linear" }}
+        animate={reducedMotion ? { rotateZ: 0 } : { rotateZ: 360 }}
+        transition={{ duration: RING_ROTATION_DURATION.inner, repeat: reducedMotion ? 0 : Infinity, ease: "linear" }}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 md:w-52 md:h-52 rounded-full border border-primary/30"
       >
         {/* Dots on inner ring */}
@@ -65,8 +67,8 @@ export function TechStack3D() {
 
       {/* Middle rotating ring */}
       <motion.div
-        animate={{ rotateZ: -360 }}
-        transition={{ duration: RING_ROTATION_DURATION.middle, repeat: Infinity, ease: "linear" }}
+        animate={reducedMotion ? { rotateZ: 0 } : { rotateZ: -360 }}
+        transition={{ duration: RING_ROTATION_DURATION.middle, repeat: reducedMotion ? 0 : Infinity, ease: "linear" }}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 md:w-72 md:h-72 rounded-full border border-border"
       >
         {/* Dots on middle ring */}
@@ -85,8 +87,8 @@ export function TechStack3D() {
 
       {/* Outer rotating ring */}
       <motion.div
-        animate={{ rotateZ: 360 }}
-        transition={{ duration: RING_ROTATION_DURATION.outer, repeat: Infinity, ease: "linear" }}
+        animate={reducedMotion ? { rotateZ: 0 } : { rotateZ: 360 }}
+        transition={{ duration: RING_ROTATION_DURATION.outer, repeat: reducedMotion ? 0 : Infinity, ease: "linear" }}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-96 md:h-96 rounded-full border border-border/50"
       >
         {/* Dots on outer ring */}
@@ -112,16 +114,16 @@ export function TechStack3D() {
       >
         <motion.div
           className="text-5xl md:text-6xl font-bold text-primary"
-          animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          animate={reducedMotion ? { scale: 1 } : { scale: [1, 1.05, 1] }}
+          transition={{ duration: 2, repeat: reducedMotion ? 0 : Infinity, ease: "easeInOut" }}
         >
           {yearsCount}+
         </motion.div>
         <div className="text-sm md:text-base text-muted-foreground mt-1">Years Experience</div>
       </motion.div>
 
-      {/* Floating particles */}
-      {[...Array(12)].map((_, i) => (
+      {/* Floating particles — skip entirely on reduced-motion */}
+      {!reducedMotion && [...Array(8)].map((_, i) => (
         <motion.div
           key={i}
           initial={{ opacity: 0 }}

@@ -45,5 +45,8 @@
   "bugs": {
     "url": "https://github.com/johnpaullagda08/My-portfolio/issues"
   },
-  "homepage": "https://github.com/johnpaullagda08/My-portfolio#readme"
+  "homepage": "https://github.com/johnpaullagda08/My-portfolio#readme",
+  "optionalDependencies": {
+    "@next/swc-darwin-arm64": "^16.1.3"
+  }
 }

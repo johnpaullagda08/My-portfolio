@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import { Section, ScrollReveal } from "@/components/common";
-import { profile } from "@/lib/data";
+import { profile, getYearsOfExperience } from "@/lib/data";
 
 export function About() {
   const stats = [
-    { label: "Years Experience", value: "7+" },
+    { label: "Years Experience", value: `${getYearsOfExperience()}+` },
     { label: "Projects Completed", value: "15+" },
     { label: "Technologies", value: "15+" },
   ];

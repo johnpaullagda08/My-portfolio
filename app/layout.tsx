@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/common";
+import { getYearsOfExperience } from "@/lib/data";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,10 +14,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const description = `Full Stack Web Developer with ${getYearsOfExperience()}+ years of experience building web applications with Vue, React, Node.js, and PHP.`;
+
 export const metadata: Metadata = {
   title: "John Paul Lagda | Full Stack Web Developer",
-  description:
-    "Full Stack Web Developer with 7+ years of experience building web applications with Vue, React, Node.js, and PHP.",
+  description,
   keywords: ["Full Stack Developer", "Web Developer", "Vue", "React", "Node.js", "PHP", "JavaScript", "TypeScript"],
   authors: [{ name: "John Paul Lagda" }],
   creator: "John Paul Lagda",
@@ -26,7 +28,7 @@ export const metadata: Metadata = {
     url: "https://johnpaullagda.dev",
     siteName: "John Paul Lagda Portfolio",
     title: "John Paul Lagda | Full Stack Web Developer",
-    description: "Full Stack Web Developer with 7+ years of experience building web applications with Vue, React, Node.js, and PHP.",
+    description,
     images: [
       {
         url: "/og-image.png",
@@ -39,7 +41,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "John Paul Lagda | Full Stack Web Developer",
-    description: "Full Stack Web Developer with 7+ years of experience building web applications with Vue, React, Node.js, and PHP.",
+    description,
     images: ["/og-image.png"],
   },
   robots: {
